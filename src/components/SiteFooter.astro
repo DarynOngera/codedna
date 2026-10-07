@@ -1,0 +1,97 @@
+---
+import { CONTACT_EMAIL, NAV_ITEMS, SITE_NAME } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-page site-footer__inner">
+    <div class="site-footer__brand">
+      <p class="brand">{SITE_NAME}</p>
+      <p class="micro">Where Code Meets Biology</p>
+    </div>
+
+    <nav aria-label="Footer">
+      <ul class="footer-nav">
+        {
+          NAV_ITEMS.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={`mailto:${CONTACT_EMAIL}`}>Email</a>
+        </li>
+      </ul>
+    </nav>
+
+    <p class="site-footer__legal">
+      © {year} {SITE_NAME}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-block-start: 1px solid var(--color-rule);
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    margin-block-start: auto;
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+
+    .site-footer__legal {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .brand {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .site-footer__brand {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .footer-nav a {
+    font-size: 0.9375rem;
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    transition: color 150ms ease-out;
+  }
+
+  .footer-nav a:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+
+  .site-footer__legal {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--text-micro--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+</style>

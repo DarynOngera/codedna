@@ -1,0 +1,272 @@
+---
+import ActionLink from '../components/ActionLink.astro';
+import CallToAction from '../components/CallToAction.astro';
+import Section from '../components/Section.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { AREAS_OF_INTEREST } from '../data/site';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: new URL('/logo.png', SITE_URL).href,
+};
+---
+
+<BaseLayout
+  title={SITE_TITLE}
+  description={SITE_DESCRIPTION}
+  path="/"
+  jsonLd={organization}
+>
+  <!-- 00 · Hero -->
+  <section class="hero section--inverse">
+    <div class="container-page hero__grid">
+      <div class="hero__copy">
+        <h1 class="display hero__title">
+          Where Code<br />Meets Biology.
+        </h1>
+        <p class="lede hero__lede">
+          CODEDNA explores the intersection of computation, technology, and biological systems.
+        </p>
+        <p class="hero__actions">
+          <ActionLink href="/contact" variant="light">Contact</ActionLink>
+          <ActionLink href="/about" variant="text">About CODEDNA</ActionLink>
+        </p>
+        <hr class="hairline hero__rule" />
+        <p class="micro">CODE / DNA</p>
+      </div>
+      <img
+        class="hero__logo"
+        src="/logo-inverse.png"
+        width="1200"
+        height="468"
+        alt={SITE_NAME}
+      />
+    </div>
+  </section>
+
+  <!-- 01 · Introduction -->
+  <Section id="introduction" index="01" rule>
+    <SectionHeading
+      label="Introduction"
+      title="Two disciplines, one company"
+      lede="CODEDNA is a technology + biology company. Software, computation, and engineering on one side; living systems, measurement, and the laboratory on the other."
+    />
+    <p class="prose prose--indent">
+      The company is young, and its direction is still being shaped. This site is its first
+      public statement — a record of where the work starts, not where it ends.
+    </p>
+  </Section>
+
+  <!-- 02 · Technology × Biology -->
+  <Section id="intersection" index="02" rule>
+    <SectionHeading
+      label="The intersection"
+      title="Technology × Biology"
+    />
+    <div class="axis">
+      <div class="axis__item">
+        <p class="micro">Technology</p>
+        <p class="axis__body">
+          Computation, software, and engineering discipline.
+        </p>
+      </div>
+      <div class="axis__item">
+        <p class="micro">Biology</p>
+        <p class="axis__body">
+          Living systems, measurement, and the laboratory.
+        </p>
+      </div>
+    </div>
+    <p class="prose">
+      The work that matters happens at the boundary — where software must answer to the
+      realities of biology, and biology receives instruments it was never designed for.
+    </p>
+  </Section>
+
+  <!-- 03 · Areas of interest -->
+  <Section id="interests" index="03" rule tone="surface">
+    <SectionHeading
+      label="Areas of interest"
+      title="Where our attention currently sits"
+      lede="Broad directions we are exploring — not an offering, and not yet a roadmap."
+    />
+    <ol class="interests">
+      {
+        AREAS_OF_INTEREST.map((area, i) => (
+          <li class="interest">
+            <span class="interest__index" aria-hidden="true">
+              {(i + 1).toString().padStart(2, '0')}
+            </span>
+            <div class="interest__body">
+              <h3>{area.title}</h3>
+              <p>{area.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- 04 · Philosophy -->
+  <Section id="philosophy" index="04" rule>
+    <SectionHeading
+      label="Philosophy"
+      title="Our working premise"
+      lede="Code is becoming one of the primary instruments for working with living systems."
+    />
+    <p class="prose">
+      The people who build that future will come from both sides of the seam. We believe they
+      should be honest about how much of it remains unknown — and disciplined about the parts
+      that are.
+    </p>
+  </Section>
+
+  <!-- 05 · Contact -->
+  <CallToAction index="05" />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(5rem, 14vw, 9rem) clamp(3.5rem, 9vw, 6.5rem);
+    border-block-end: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .hero__copy {
+    min-width: 0;
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: clamp(2.75rem, 7vw, 4.5rem);
+  }
+
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: start;
+    }
+  }
+
+  .hero__title {
+    max-width: 12ch;
+    margin: 0;
+    color: var(--color-paper);
+  }
+
+  .hero__lede {
+    margin-block-start: clamp(1.75rem, 4vw, 2.5rem);
+    max-width: 42ch;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    margin-block-start: clamp(2rem, 5vw, 3rem);
+  }
+
+  .hero__rule {
+    margin-block-start: clamp(3rem, 7vw, 5rem);
+    margin-block-end: 1rem;
+    max-width: 48rem;
+    border-block-start-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Offset to the side: sits low-right on wide screens, below the copy stacked. */
+  .hero__logo {
+    width: 100%;
+    height: auto;
+    max-width: 34rem;
+    align-self: end;
+  }
+
+  @media (min-width: 64rem) {
+    .hero__logo {
+      justify-self: end;
+      /* hang below the copy baseline for asymmetry */
+      margin-block-start: clamp(4rem, 9vw, 7.5rem);
+    }
+  }
+
+  .prose--indent {
+    margin-block-start: 2rem;
+  }
+
+  /* Technology × Biology */
+  .axis {
+    display: grid;
+    gap: 1.5rem;
+    margin-block: 2.5rem 2rem;
+    max-width: 52rem;
+  }
+
+  @media (min-width: 48rem) {
+    .axis {
+      grid-template-columns: 1fr 1fr;
+      gap: 0 2.5rem;
+    }
+  }
+
+  .axis__item {
+    border-block-start: 1px solid var(--color-rule);
+    padding-block-start: 1rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .axis__body {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h3--letter-spacing);
+    margin: 0;
+    max-width: 24ch;
+  }
+
+  /* Areas of interest */
+  .interests {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    max-width: 52rem;
+  }
+
+  .interest {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: baseline;
+    border-block-start: 1px solid var(--color-rule);
+    padding-block: 1.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    .interest {
+      grid-template-columns: 5rem minmax(0, 1fr);
+    }
+  }
+
+  .interest__index {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--text-micro--letter-spacing);
+    color: var(--color-ink-faint);
+  }
+
+  .interest h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .interest p {
+    margin: 0.5rem 0 0;
+    color: var(--color-ink-muted);
+    max-width: 52ch;
+  }
+</style>

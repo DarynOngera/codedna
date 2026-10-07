@@ -1,0 +1,10 @@
+[Unit]
+Description=Renew Let's Encrypt certificates for CODEDNA
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# The standalone authenticator needs :80 free; the pre/post hooks live in the
+# stored renewal config (see provision-ec2.sh certonly command).
+ExecStart=/usr/bin/certbot renew --quiet --no-random-sleep-on-renew

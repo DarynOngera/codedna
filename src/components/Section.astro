@@ -1,0 +1,37 @@
+---
+interface Props {
+  id?: string;
+  /** Mono index shown in the left rail, e.g. "01" */
+  index?: string;
+  /** rule | surface | inverse — combined freely */
+  rule?: boolean;
+  tone?: 'surface' | 'inverse';
+  class?: string;
+}
+
+const { id, index, rule = false, tone, class: className } = Astro.props;
+
+const classes = [
+  'section',
+  rule && 'section--rule',
+  tone && `section--${tone}`,
+  className,
+];
+---
+
+<section id={id} class:list={classes}>
+  <div class="container-page">
+    <div class="section-grid">
+      {
+        index && (
+          <p class="section-index" aria-hidden="true">
+            {index}
+          </p>
+        )
+      }
+      <div class:list={[!index && 'lg:col-start-2']}>
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

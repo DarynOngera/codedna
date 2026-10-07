@@ -1,0 +1,36 @@
+---
+import ActionLink from '../components/ActionLink.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Page not found · CODEDNA';
+const description = 'The page you are looking for does not exist.';
+---
+
+<BaseLayout title={title} description={description} path="/404">
+  <section class="notfound">
+    <div class="container-page">
+      <p class="micro">404</p>
+      <h1 class="text-h1">Nothing insists on living here.</h1>
+      <p class="lede">
+        The page you are looking for does not exist, or has moved.
+      </p>
+      <p class="notfound__action">
+        <ActionLink href="/">Back to home</ActionLink>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: clamp(5rem, 14vw, 9rem) clamp(4rem, 10vw, 7rem);
+  }
+
+  .notfound .display {
+    max-width: 14ch;
+  }
+
+  .notfound__action {
+    margin-block-start: 2rem;
+  }
+</style>

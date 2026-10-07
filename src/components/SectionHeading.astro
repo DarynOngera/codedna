@@ -1,0 +1,31 @@
+---
+interface Props {
+  /** Mono label above the heading, e.g. "POSITIONING" */
+  label?: string;
+  title: string;
+  lede?: string;
+  /** Heading level — defaults to h2; pages use h1 directly in their hero */
+  as?: 'h1' | 'h2' | 'h3';
+  class?: string;
+}
+
+const { label, title, lede, as: Tag = 'h2', class: className } = Astro.props;
+---
+
+<div class:list={['section-heading', className]}>
+  {label && <p class="micro">{label}</p>}
+  <Tag class="text-h2">{title}</Tag>
+  {lede && <p class="lede">{lede}</p>}
+</div>
+
+<style>
+  .section-heading {
+    display: grid;
+    gap: 1rem;
+    max-width: 46rem;
+  }
+
+  .section-heading :global(.lede) {
+    margin-block-start: 0.25rem;
+  }
+</style>

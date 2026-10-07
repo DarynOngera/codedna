@@ -1,0 +1,58 @@
+---
+import ActionLink from './ActionLink.astro';
+import Section from './Section.astro';
+
+interface Props {
+  index?: string;
+  title?: string;
+  body?: string;
+}
+
+const {
+  index = '06',
+  title = 'Talk to us',
+  body = 'If the intersection of code and biology is where you work too, we would like to hear from you.',
+} = Astro.props;
+---
+
+<Section index={index} tone="inverse" class="cta">
+  <div class="cta__inner">
+    <div class="cta__copy">
+      <p class="micro">Contact</p>
+      <h2 class="text-h2">{title}</h2>
+      <p class="lede">{body}</p>
+    </div>
+
+    <p class="cta__action">
+      <ActionLink href="/contact" variant="light">
+        Get in touch
+      </ActionLink>
+    </p>
+  </div>
+</Section>
+
+<style>
+  .cta__inner {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 48rem) {
+    .cta__inner {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+
+  .cta__copy {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 40rem;
+  }
+
+  .cta__action {
+    margin: 0;
+  }
+</style>

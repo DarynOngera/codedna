@@ -1,0 +1,38 @@
+# CODEDNA contact API — systemd unit for the Node backend on the EC2 instance.
+# The Node server binds to 127.0.0.1 only; Nginx proxies /api/ to it.
+#
+# Install:
+#   cp systemd/codedna-api.service /etc/systemd/system/codedna-api.service
+#   systemctl daemon-reload && systemctl enable --now codedna-api
+
+[Unit]
+Description=CODEDNA contact API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=codedna
+Group=codedna
+WorkingDirectory=/opt/codedna/server
+# Secrets live outside the repo. Root-owned, mode 0600, read by systemd as root.
+EnvironmentFile=/etc/codedna/api.env
+ExecStart=/usr/bin/node src/index.ts
+Restart=always
+RestartSec=3
+TimeoutStopSec=10
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,87 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import Section from '../components/Section.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { CONTACT_EMAIL } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Contact · CODEDNA';
+const description =
+  'Contact CODEDNA — questions, conversations, and collisions of fields are all welcome.';
+
+const status = Astro.url.searchParams.get('status');
+const sent = status === 'sent';
+---
+
+<BaseLayout title={title} description={description} path="/contact">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container-page">
+      <h1 class="text-h1 hero__title">Contact</h1>
+      <p class="lede">
+        Questions, conversations, and collisions of fields — all welcome.
+      </p>
+    </div>
+  </section>
+
+  {
+    sent && (
+      <div class="sent-banner" role="status">
+        <div class="container-page">
+          Thanks — your message has been sent. We reply from {CONTACT_EMAIL}.
+        </div>
+      </div>
+    )
+  }
+
+  <!-- 01 · Form -->
+  <Section id="form" index="01" rule>
+    <SectionHeading
+      label="Contact"
+      title="Send us a message"
+      lede="Tell us what you are working on, or where our interests overlap. We read everything and reply."
+    />
+
+    <ContactForm />
+
+    <p class="fallback">
+      Prefer email? Write to{' '}
+      <a href={`mailto:${CONTACT_EMAIL}`} class="fallback__link">
+        {CONTACT_EMAIL}
+      </a>
+    </p>
+  </Section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4.5rem, 12vw, 7.5rem) clamp(3.5rem, 9vw, 6rem);
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  .hero__title {
+    margin: 0;
+  }
+
+  .hero .lede {
+    margin-block-start: 1.5rem;
+    max-width: 46ch;
+  }
+
+  .sent-banner {
+    border-block-end: 1px solid var(--color-rule);
+    background-color: var(--color-surface);
+    padding-block: 1.25rem;
+    font-weight: 500;
+  }
+
+  .fallback {
+    margin-block-start: 3rem;
+    color: var(--color-ink-muted);
+  }
+
+  .fallback__link {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+</style>

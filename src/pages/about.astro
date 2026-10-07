@@ -1,0 +1,145 @@
+---
+import CallToAction from '../components/CallToAction.astro';
+import Section from '../components/Section.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'About · CODEDNA';
+const description =
+  'CODEDNA is a technology + biology company exploring the intersection of computation, technology, and biological systems.';
+---
+
+<BaseLayout title={title} description={description} path="/about">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container-page">
+      <h1 class="text-h1 hero__title">About</h1>
+      <p class="lede">
+        The short version: CODEDNA is a technology + biology company. The slightly longer
+        version is below.
+      </p>
+    </div>
+  </section>
+
+  <!-- 01 · The company -->
+  <Section id="company" index="01" rule>
+    <SectionHeading
+      label="The company"
+      title="Two disciplines, one company"
+    />
+    <div class="prose">
+      <p>
+        CODEDNA happens where software, computation, and engineering meet living systems — in
+        their measurement, in their data, and in the laboratory.
+      </p>
+      <p>
+        The company is deliberately small and deliberately early. Its offering, if any, is
+        still being defined. What exists today is a point of view, a discipline, and a
+        decision to work where two fields refuse to stay separate.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 02 · The name -->
+  <Section id="name" index="02" rule>
+    <SectionHeading
+      label="The name"
+      title="CODE plus DNA"
+    />
+    <p class="name-lockup" aria-hidden="true">
+      CODE&thinsp;+&thinsp;DNA
+    </p>
+    <div class="prose">
+      <p>
+        The name is the concatenation. Code is our home discipline — software understood as
+        precision, structure, and method. DNA stands for the biological half — living systems,
+        measured and engineered. The name binds the two without pretending they are the same
+        thing.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 03 · Why the seam -->
+  <Section id="why" index="03" rule>
+    <SectionHeading
+      label="Why the seam"
+      title="Biology became a data problem"
+    />
+    <div class="prose">
+      <p>
+        Biology now produces measurements at a scale that software was built for, and
+        computation has become a way to work on living systems directly. Neither field finishes
+        the job on its own.
+      </p>
+      <p>
+        The instruments, protocols, and code that connect them are some of the least polished
+        parts of modern science — and some of the most consequential.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 04 · Mission & philosophy -->
+  <Section id="mission" index="04" rule>
+    <SectionHeading
+      label="Mission and manner"
+      title="Measured before announced"
+    />
+    <div class="prose">
+      <p>
+        Our direction: to make working on biological systems with code as ordinary as working
+        on systems of any other kind.
+      </p>
+      <p>
+        In manner: rigor from engineering, patience from biology, and work that is measured
+        before it is announced.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 05 · Current status -->
+  <Section id="status" index="05" rule tone="surface">
+    <SectionHeading
+      label="Current status"
+      title="Where we are right now"
+    />
+    <div class="prose">
+      <p>
+        CODEDNA is in an exploratory phase. There is no polished offering to announce, no
+        roadmap to sell, and no capability claimed that has not been demonstrated.
+      </p>
+      <p>
+        As the direction firms up, this site will be the first place it shows.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 06 · Contact -->
+  <CallToAction index="06" />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4.5rem, 12vw, 7.5rem) clamp(3.5rem, 9vw, 6rem);
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  .hero__title {
+    margin: 0;
+  }
+
+  .hero .lede {
+    margin-block-start: 1.5rem;
+    max-width: 46ch;
+  }
+
+  .prose p {
+    margin: 0;
+  }
+
+  .name-lockup {
+    font-size: clamp(1.75rem, 2.5vw + 1rem, 3rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin: 2.5rem 0;
+  }
+</style>

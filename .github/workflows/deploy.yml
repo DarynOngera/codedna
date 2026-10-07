@@ -1,0 +1,158 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-codedna
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm --prefix server ci
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Server typecheck
+        run: npm --prefix server run typecheck
+
+      - name: Build site
+        run: npm run build
+
+      - name: Server tests
+        working-directory: server
+        run: NODE_ENV=test node --test
+
+      - name: Audit production deps
+        run: |
+          npm audit --omit=dev
+          npm --prefix server audit --omit=dev
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 1
+
+      - name: Upload server
+        uses: actions/upload-artifact@v4
+        with:
+          name: server
+          path: server
+          retention-days: 1
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: server
+          path: server
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/codedna_ed25519
+          chmod 600 ~/.ssh/codedna_ed25519
+          ssh-keyscan "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          cat >> ~/.ssh/config <<EOF
+          Host codedna
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/codedna_ed25519
+            IdentitiesOnly yes
+            StrictHostKeyChecking accept-new
+          EOF
+
+      - name: Ship repo for provisioning
+        run: |
+          rsync -az --delete -e ssh \
+            --exclude .git --exclude node_modules --exclude server/node_modules \
+            --exclude dist --exclude .astro --exclude server/.env \
+            ./ codedna:/opt/codedna/repo/
+
+      - name: Provision server (nginx, node, certbot, cert)
+        env:
+          DOMAIN: ${{ secrets.DOMAIN }}
+        run: |
+          ssh codedna "sudo DOMAIN='$DOMAIN' bash /opt/codedna/repo/scripts/provision-ec2.sh"
+
+      - name: Deploy static release (atomic symlink)
+        run: |
+          TS="$(date -u +%Y%m%d%H%M%S)"
+          echo "RELEASE=$TS" >> "$GITHUB_ENV"
+          rsync -az -e ssh ./dist/ "codedna:/var/www/codedna/releases/$TS/"
+          ssh codedna "ln -sfn /var/www/codedna/releases/$TS /var/www/codedna/current"
+
+      - name: Deploy server code
+        run: |
+          rsync -az --delete -e ssh \
+            --exclude node_modules --exclude .env --exclude test \
+            ./server/ codedna:/opt/codedna/server/
+          ssh codedna "cd /opt/codedna/server && npm ci --omit=dev && chown -R codedna:codedna /opt/codedna"
+
+      - name: Write API env from secrets
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          CONTACT_TO_EMAIL: ${{ secrets.CONTACT_TO_EMAIL }}
+          CONTACT_FROM_EMAIL: ${{ secrets.CONTACT_FROM_EMAIL }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+        run: |
+          ssh codedna "sudo tee /etc/codedna/api.env >/dev/null" <<EOF
+          NODE_ENV=production
+          HOST=127.0.0.1
+          PORT=3000
+          TRUST_PROXY=1
+          RESEND_API_KEY=$RESEND_API_KEY
+          CONTACT_TO_EMAIL=$CONTACT_TO_EMAIL
+          CONTACT_FROM_EMAIL=$CONTACT_FROM_EMAIL
+          ALLOWED_ORIGINS=https://$DOMAIN
+          EOF
+          ssh codedna "sudo chmod 600 /etc/codedna/api.env && sudo chown root:codedna /etc/codedna/api.env"
+
+      - name: Restart services
+        run: |
+          ssh codedna "sudo systemctl restart codedna-api"
+          ssh codedna "sudo nginx -t && sudo systemctl reload nginx" || \
+            echo "Nginx not reloaded (cert/DNS not ready?). It will start on the next successful provision run."
+
+      - name: Smoke test
+        run: |
+          ssh codedna "curl -fsS -o /dev/null -w 'home: %{http_code}\n' http://127.0.0.1/ || true"
+          ssh codedna "curl -fsS -w 'api: %{http_code}\n' http://127.0.0.1/api/health || true"
+          ssh codedna "curl -fsS -o /dev/null 'http://127.0.0.1/api/contact' --data 'name=t&email=t@t.co&subject=s&message=0123456789&website=' -w 'contact-post: %{http_code}\n' || true"

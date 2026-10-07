@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily renewal of CODEDNA Let's Encrypt certificates
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+OnCalendar=*-*-* 15:30:00
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

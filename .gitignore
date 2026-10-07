@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+server/node_modules/
+
+# build output
+dist/
+.astro/
+server/dist/
+
+# environment — never commit secrets
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+/etc/
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# deployment scratch
+.tmp/
+releases/

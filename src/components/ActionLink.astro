@@ -1,0 +1,94 @@
+---
+interface Props {
+  href: string;
+  variant?: 'solid' | 'outline' | 'light' | 'text';
+  class?: string;
+  /** Rendered to assistive tech in addition to the visible label */
+  ariaLabel?: string;
+}
+
+const {
+  href,
+  variant = 'solid',
+  class: className,
+  ariaLabel,
+  ...rest
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['action', `action--${variant}`, className]}
+  aria-label={ariaLabel}
+  {...rest}
+>
+  <slot />
+</a>
+
+<style>
+  .action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9375rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out,
+      border-color 150ms ease-out;
+  }
+
+  .action--solid {
+    background-color: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .action--solid:hover {
+    background-color: transparent;
+    color: var(--color-ink);
+  }
+
+  .action--outline {
+    background-color: transparent;
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+
+  .action--outline:hover {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* On the inverted CTA band: paper button that empties out on hover */
+  .action--light {
+    background-color: var(--color-paper);
+    border-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  .action--light:hover {
+    background-color: transparent;
+    color: var(--color-paper);
+  }
+
+  .action--text {
+    padding: 0;
+    border: 0;
+    font-size: 1rem;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 150ms ease-out;
+  }
+
+  .action--text:hover {
+    text-decoration-color: currentColor;
+  }
+</style>

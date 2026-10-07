@@ -1,0 +1,268 @@
+---
+interface FieldErrors {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+interface Props {
+  errors?: FieldErrors;
+}
+const { errors } = Astro.props;
+---
+
+<form
+  id="contact-form"
+  method="post"
+  action="/api/contact"
+  class="contact-form"
+  enctype="application/x-www-form-urlencoded"
+>
+  <div class="contact-form__status" role="status" aria-live="polite"></div>
+  <div class="contact-form__alert" role="alert"></div>
+
+  <div class="field">
+    <label for="contact-name">Name</label>
+    <input
+      id="contact-name"
+      name="name"
+      type="text"
+      autocomplete="name"
+      required
+      maxlength="120"
+      aria-describedby={errors?.name ? 'contact-name-error' : undefined}
+      aria-invalid={errors?.name ? 'true' : undefined}
+    />
+    {errors?.name && <p class="field__error" id="contact-name-error">{errors.name}</p>}
+  </div>
+
+  <div class="field">
+    <label for="contact-email">Email</label>
+    <input
+      id="contact-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      maxlength="254"
+      aria-describedby={errors?.email ? 'contact-email-error' : undefined}
+      aria-invalid={errors?.email ? 'true' : undefined}
+    />
+    {errors?.email && <p class="field__error" id="contact-email-error">{errors.email}</p>}
+  </div>
+
+  <div class="field">
+    <label for="contact-subject">Subject</label>
+    <input
+      id="contact-subject"
+      name="subject"
+      type="text"
+      required
+      maxlength="200"
+      aria-describedby={errors?.subject ? 'contact-subject-error' : undefined}
+      aria-invalid={errors?.subject ? 'true' : undefined}
+    />
+    {errors?.subject && <p class="field__error" id="contact-subject-error">{errors.subject}</p>}
+  </div>
+
+  <div class="field">
+    <label for="contact-message">Message</label>
+    <textarea
+      id="contact-message"
+      name="message"
+      rows="6"
+      required
+      minlength="10"
+      maxlength="5000"
+      aria-describedby={errors?.message ? 'contact-message-error' : undefined}
+      aria-invalid={errors?.message ? 'true' : undefined}
+    ></textarea>
+    {errors?.message && <p class="field__error" id="contact-message-error">{errors.message}</p>}
+  </div>
+
+  <div class="honeypot" aria-hidden="true">
+    <label for="contact-website">Leave this field empty</label>
+    <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <p class="contact-form__submit">
+    <button type="submit" class="contact-form__button">Send message</button>
+  </p>
+</form>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = form.querySelector('.contact-form__status') as HTMLElement;
+  const alertEl = form.querySelector('.contact-form__alert') as HTMLElement;
+
+  function clearServerErrors(): void {
+    form.querySelectorAll<HTMLElement>('.field__error').forEach((el) => el.remove());
+    form
+      .querySelectorAll('[aria-invalid]')
+      .forEach((el) => el.removeAttribute('aria-invalid'));
+  }
+
+  function setServerErrors(fields: Record<string, string>): void {
+    for (const [name, message] of Object.entries(fields)) {
+      const input = form.elements.namedItem(name) as HTMLElement | null;
+      if (!input) continue;
+      const wrap = input.closest('.field');
+      const err = document.createElement('p');
+      err.className = 'field__error';
+      err.textContent = message;
+      wrap?.append(err);
+      input.setAttribute('aria-invalid', 'true');
+    }
+  }
+
+  if (form) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearServerErrors();
+      status.textContent = '';
+      alertEl.textContent = '';
+
+      if (!form.reportValidity()) return;
+
+      status.textContent = 'Sending…';
+
+      const data = new FormData(form);
+      const body = {
+        name: data.get('name'),
+        email: data.get('email'),
+        subject: data.get('subject'),
+        message: data.get('message'),
+        website: data.get('website'),
+      };
+
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+      })
+        .then(async (res) => {
+          const payload = (await res.json().catch(() => ({}))) as {
+            error?: { message?: string; fields?: Record<string, string> };
+          };
+          if (res.ok) {
+            status.textContent =
+              'Thanks — your message has been sent. We will reply from hello@c0dedna.com.';
+            form.reset();
+            return;
+          }
+          alertEl.textContent = payload.error?.message ?? 'Something went wrong. Please try again.';
+          if (payload.error?.fields) setServerErrors(payload.error.fields);
+        })
+        .catch(() => {
+          alertEl.textContent = 'Could not reach the server. Please email hello@c0dedna.com.';
+        })
+        .finally(() => {
+          if (status.textContent === 'Sending…') status.textContent = '';
+        });
+    });
+  }
+</script>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: 1.75rem;
+    max-width: 42rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .field label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    border-block-end: 1px solid var(--color-rule);
+    border-radius: 0;
+    padding: 0.75rem 0.125rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+    transition: border-color 150ms ease-out;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 8.5rem;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--color-ink-faint);
+  }
+
+  .field input:hover,
+  .field textarea:hover {
+    border-block-end-color: var(--color-ink-muted);
+  }
+
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    border-block-end-color: var(--color-ink);
+    border-block-end-width: 2px;
+  }
+
+  .field__error {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    margin: 0;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .contact-form__submit {
+    margin: 0;
+  }
+
+  .contact-form__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9375rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    background-color: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    color: var(--color-paper);
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .contact-form__button:hover {
+    background-color: transparent;
+    color: var(--color-ink);
+  }
+
+  .contact-form__status[class]:empty,
+  .contact-form__alert[class]:empty {
+    display: none;
+  }
+</style>
