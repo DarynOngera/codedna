@@ -114,8 +114,11 @@ if ! have_cert; then
   if [ -n "$PUB_IP" ] && getent ahostsv4 "$DOMAIN" | awk '{print $1}' | grep -qx "$PUB_IP"; then
     echo "==> issuing Let's Encrypt cert for $DOMAIN + www.$DOMAIN"
     systemctl stop nginx || true   # free :80 for the standalone authenticator
-    certbot certonly --standalone --non-interactive --agree-tos --keep-until-expiring \
-      -m "$CERT_EMAIL" -d "$DOMAIN" -d "www.$DOMAIN"
+    if ! certbot certonly --standalone --non-interactive --agree-tos --keep-until-expiring \
+        -m "$CERT_EMAIL" -d "$DOMAIN" -d "www.$DOMAIN"; then
+      echo "ERROR: cert issuance failed; keeping the HTTP site up for now." >&2
+      ISSUE_FAILED=1
+    fi
     write_nginx_fragments
   else
     echo "WARNING: DNS for $DOMAIN does not point at this host yet." >&2
@@ -125,7 +128,12 @@ if ! have_cert; then
   fi
 fi
 
-reload_nginx || exit 1
+RC=0
+if ! reload_nginx; then
+  echo "ERROR: nginx failed to start/reload after provisioning." >&2
+  RC=1
+fi
+[ -z "${ISSUE_FAILED:-}" ] || RC=1
 
 echo "Provisioning complete."
 if have_cert; then
@@ -133,3 +141,4 @@ if have_cert; then
 else
   echo "Site (HTTP, TLS pending): ${PUB_IP:-<public ip>}"
 fi
+exit "$RC"
