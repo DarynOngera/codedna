@@ -65,6 +65,11 @@ chmod 600 /etc/codedna/api.env
 install -o root -g root -m 0644 "$REPO_DIR/nginx/c0dedna.conf" /etc/nginx/conf.d/c0dedna.conf
 rm -f /etc/nginx/sites-enabled/default
 
+# apt auto-starts a default nginx server we must not keep: it can't load
+# c0dedna.conf until the LE cert exists, would squat on :80 (blocking certbot
+# standalone), and would serve the stock welcome page meanwhile.
+systemctl stop nginx >/dev/null 2>&1 || true
+
 # systemd units
 install -o root -g root -m 0644 "$REPO_DIR/systemd/codedna-api.service" /etc/systemd/system/codedna-api.service
 install -o root -g root -m 0644 "$REPO_DIR/systemd/codedna-certbot.service" /etc/systemd/system/codedna-certbot.service
