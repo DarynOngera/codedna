@@ -20,6 +20,24 @@ DOMAIN="${DOMAIN:-c0dedna.com}"
 CERT_EMAIL="${CERT_EMAIL:-admin@${DOMAIN}}"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
+export DEBIAN_FRONTEND=noninteractive
+
+# Tiny instances (t3.nano = 0.5 GiB) OOM-kill dpkg while unpacking large
+# packages like nodejs. Give apt headroom before it does anything heavy.
+if [ ! -f /swapfile ] && ! swapon --show | grep -q swapfile; then
+  echo "==> adding 2G swap"
+  fallocate -l 2G /swapfile 2>/dev/null || dd if=/dev/zero of=/swapfile bs=1M count=2048 status=none
+  chmod 600 /swapfile
+  mkswap /swapfile >/dev/null
+  swapon /swapfile
+  grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+sysctl -w vm.swappiness=10 >/dev/null 2>&1 || true
+
+# Repair the interrupted dpkg state left behind by a previous OOM'd run.
+dpkg --configure -a || true
+apt-get -f install -y || true
+
 apt-get update -y
 apt-get install -y curl ca-certificates gnupg nginx rsync certbot
 
