@@ -35,18 +35,9 @@ const organization = {
   <!-- 00 · Hero -->
   <section class="hero section--inverse">
     <div class="container-page hero__inner">
-      <div class="hero__head">
-        <h1 class="display hero__title">
-          Software, Cloud<br />&amp; AI for businesses.
-        </h1>
-        <img
-          class="hero__logo"
-          src="/logo-inverse.png"
-          width="1200"
-          height="468"
-          alt={SITE_NAME}
-        />
-      </div>
+      <h1 class="display hero__title">
+        Software, Cloud<br />&amp; AI for businesses.
+      </h1>
       <div class="hero__body">
         <p class="lede hero__lede">
           CODEDNA, your all-in-one technology partner for custom software, IT consulting,
@@ -63,6 +54,13 @@ const organization = {
         <hr class="hairline hero__rule" />
         <p class="micro">CODE / DNA</p>
       </div>
+      <img
+        class="hero__logo"
+        src="/logo-inverse.png"
+        width="1200"
+        height="468"
+        alt={SITE_NAME}
+      />
     </div>
   </section>
 
@@ -165,28 +163,21 @@ const organization = {
 
   .hero__inner {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'title'
+      'body'
+      'logo';
     gap: clamp(2.5rem, 6vw, 4rem);
   }
 
-  /* Title and wordmark share a row on wide screens; the logo centres on the title. */
-  .hero__head {
-    display: grid;
-    gap: clamp(1.75rem, 5vw, 3rem);
-  }
-
-  @media (min-width: 64rem) {
-    .hero__head {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      gap: clamp(2.5rem, 6vw, 5rem);
-    }
-  }
-
   .hero__body {
+    grid-area: body;
     max-width: 48rem;
   }
 
   .hero__title {
+    grid-area: title;
     max-width: 14ch;
     margin: 0;
     color: var(--color-paper);
@@ -211,12 +202,22 @@ const organization = {
   }
 
   .hero__logo {
+    grid-area: logo;
     width: 100%;
     height: auto;
     max-width: 32rem;
   }
 
   @media (min-width: 64rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        'title logo'
+        'body  body';
+      align-items: center;
+      column-gap: clamp(2.5rem, 6vw, 5rem);
+    }
+
     .hero__logo {
       width: auto;
       max-width: 26rem;
