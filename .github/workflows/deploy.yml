@@ -110,7 +110,7 @@ jobs:
 
       - name: Prep remote directories
         run: |
-          ssh codedna 'sudo mkdir -p /opt/codedna /var/www/codedna/releases && sudo chown $(id -un):$(id -gn) /opt/codedna /var/www/codedna/releases'
+          ssh codedna 'sudo mkdir -p /opt/codedna /var/www/codedna/releases && sudo chown -R $(id -un):$(id -gn) /opt/codedna && sudo chown $(id -un):$(id -gn) /var/www/codedna/releases'
 
       - name: Ship repo for provisioning
         run: |
