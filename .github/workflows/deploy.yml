@@ -108,6 +108,10 @@ jobs:
           EOF
           ssh -o BatchMode=yes -o ConnectTimeout=10 codedna 'true'
 
+      - name: Prep remote directories
+        run: |
+          ssh codedna 'sudo mkdir -p /opt/codedna /var/www/codedna/releases && sudo chown $(id -un):$(id -gn) /opt/codedna /var/www/codedna/releases'
+
       - name: Ship repo for provisioning
         run: |
           rsync -az --delete -e ssh \
@@ -126,14 +130,15 @@ jobs:
           TS="$(date -u +%Y%m%d%H%M%S)"
           echo "RELEASE=$TS" >> "$GITHUB_ENV"
           rsync -az -e ssh ./dist/ "codedna:/var/www/codedna/releases/$TS/"
-          ssh codedna "ln -sfn /var/www/codedna/releases/$TS /var/www/codedna/current"
+          ssh codedna "sudo ln -sfn /var/www/codedna/releases/$TS /var/www/codedna/current"
 
       - name: Deploy server code
         run: |
+          ssh codedna 'sudo chown -R $(id -un):$(id -gn) /opt/codedna'
           rsync -az --delete -e ssh \
             --exclude node_modules --exclude .env --exclude test \
             ./server/ codedna:/opt/codedna/server/
-          ssh codedna "cd /opt/codedna/server && npm ci --omit=dev && chown -R codedna:codedna /opt/codedna"
+          ssh codedna "cd /opt/codedna/server && npm ci --omit=dev && sudo chown -R codedna:codedna /opt/codedna"
 
       - name: Write API env from secrets
         env:
