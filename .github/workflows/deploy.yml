@@ -86,9 +86,17 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
+          : "${SSH_HOST:?SSH_HOST secret is empty — set it to the instance public IP}"
+          : "${SSH_USER:?SSH_USER secret is empty}"
+          : "${SSH_KEY:?SSH_KEY secret is empty — create via the file redirect (gh secret set SSH_KEY < key.pem)}"
           mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/codedna_ed25519
+          printf '%s\n' "$SSH_KEY" | tr -d '\r' > ~/.ssh/codedna_ed25519
           chmod 600 ~/.ssh/codedna_ed25519
+          ssh-keygen -y -f ~/.ssh/codedna_ed25519 >/dev/null || {
+            echo "SSH_KEY secret is not a valid private key (OpenSSH 'error in libcrypto')." >&2
+            echo "Re-set it from the file: gh secret set SSH_KEY -R DarynOngera/codedna < key.pem" >&2
+            exit 2
+          }
           ssh-keyscan "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
           cat >> ~/.ssh/config <<EOF
           Host codedna
@@ -98,6 +106,7 @@ jobs:
             IdentitiesOnly yes
             StrictHostKeyChecking accept-new
           EOF
+          ssh -o BatchMode=yes -o ConnectTimeout=10 codedna 'true'
 
       - name: Ship repo for provisioning
         run: |
