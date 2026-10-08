@@ -5,33 +5,36 @@
  */
 export const SITE_URL = 'https://c0dedna.com';
 export const SITE_NAME = 'CODEDNA';
-export const SITE_TITLE = 'CODEDNA — Where Code Meets Biology';
+export const SITE_TAGLINE = 'Software, Cloud & AI for business';
+export const SITE_TITLE = `${SITE_NAME} — ${SITE_TAGLINE}`;
 export const SITE_DESCRIPTION =
-  'CODEDNA explores the intersection of computation, technology, and biological systems.';
+  'CODEDNA is a corporate technology company. We build our own apps and provide artificial intelligence, cloud computing and IT consulting for businesses.';
 
 export const CONTACT_EMAIL = 'hello@c0dedna.com';
 
 export const NAV_ITEMS = [
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: '/apps', label: 'Apps' },
 ] as const;
 
-/** Broad, non-committal areas of interest. Never phrase these as services or offerings. */
-export const AREAS_OF_INTEREST = [
+/** The four things CODEDNA does. Rendered as an equal grid on the home page. */
+export const SERVICES = [
   {
-    title: 'Computational methods for biological data',
-    body: 'Turning biological measurements into things software can reason about — representation, analysis, and interpretation.',
+    title: 'Apps',
+    body: 'Products we design, build and run ourselves — from football predictions to algorithmic finance.',
+    href: '/apps',
   },
   {
-    title: 'Software systems for life-science workflows',
-    body: 'Tooling built with engineering discipline for work that happens at the bench, in the field, and in between.',
+    title: 'Artificial Intelligence',
+    body: 'Machine learning, prediction and automation applied to real business problems and data.',
   },
   {
-    title: 'Interfaces between engineering and the laboratory',
-    body: 'The seam where instruments, protocols, and code meet — usually the least polished and most consequential part.',
+    title: 'Cloud Computing',
+    body: 'Architecture, migration and operations on cloud infrastructure that scales with the workload.',
   },
   {
-    title: 'Exploratory research and prototyping',
-    body: 'Small, fast experiments to find out whether a question is worth asking properly.',
+    title: 'IT Consulting',
+    body: 'Technical direction and hands-on engineering for teams that need to move carefully and fast.',
   },
 ] as const;

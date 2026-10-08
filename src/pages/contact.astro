@@ -7,7 +7,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const title = 'Contact · CODEDNA';
 const description =
-  'Contact CODEDNA — questions, conversations, and collisions of fields are all welcome.';
+  'Contact CODEDNA about our apps, artificial intelligence, cloud computing or IT consulting.';
 
 const status = Astro.url.searchParams.get('status');
 const sent = status === 'sent';
@@ -19,7 +19,7 @@ const sent = status === 'sent';
     <div class="container-page">
       <h1 class="text-h1 hero__title">Contact</h1>
       <p class="lede">
-        Questions, conversations, and collisions of fields — all welcome.
+        Questions about our apps, a project to discuss, or a problem worth solving — all welcome.
       </p>
     </div>
   </section>
@@ -39,7 +39,7 @@ const sent = status === 'sent';
     <SectionHeading
       label="Contact"
       title="Send us a message"
-      lede="Tell us what you are working on, or where our interests overlap. We read everything and reply."
+      lede="Tell us what you are working on, or ask about one of our apps. We read everything and reply."
     />
 
     <ContactForm />

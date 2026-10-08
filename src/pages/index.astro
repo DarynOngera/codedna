@@ -3,8 +3,15 @@ import ActionLink from '../components/ActionLink.astro';
 import CallToAction from '../components/CallToAction.astro';
 import Section from '../components/Section.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import { AREAS_OF_INTEREST } from '../data/site';
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '../data/site';
+import { APPS } from '../data/apps';
+import {
+  CONTACT_EMAIL,
+  SERVICES,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const organization = {
@@ -13,6 +20,9 @@ const organization = {
   name: SITE_NAME,
   url: SITE_URL,
   logo: new URL('/logo.png', SITE_URL).href,
+  description: SITE_DESCRIPTION,
+  email: CONTACT_EMAIL,
+  knowsAbout: SERVICES.map((service) => service.title),
 };
 ---
 
@@ -24,28 +34,35 @@ const organization = {
 >
   <!-- 00 · Hero -->
   <section class="hero section--inverse">
-    <div class="container-page hero__grid">
-      <div class="hero__copy">
+    <div class="container-page hero__inner">
+      <div class="hero__head">
         <h1 class="display hero__title">
-          Where Code<br />Meets Biology.
+          Software, Cloud<br />&amp; AI for businesses.
         </h1>
+        <img
+          class="hero__logo"
+          src="/logo-inverse.png"
+          width="1200"
+          height="468"
+          alt={SITE_NAME}
+        />
+      </div>
+      <div class="hero__body">
         <p class="lede hero__lede">
-          CODEDNA explores the intersection of computation, technology, and biological systems.
+          CODEDNA, your all-in-one technology partner for custom software, IT consulting,
+          AI acceleration, and cloud solutions.
+
+          Helping businesses innovate, operate smarter,
+          and scale with confidence.
         </p>
+
         <p class="hero__actions">
           <ActionLink href="/contact" variant="light">Contact</ActionLink>
-          <ActionLink href="/about" variant="text">About CODEDNA</ActionLink>
+          <ActionLink href="/apps" variant="text">See our apps</ActionLink>
         </p>
         <hr class="hairline hero__rule" />
         <p class="micro">CODE / DNA</p>
       </div>
-      <img
-        class="hero__logo"
-        src="/logo-inverse.png"
-        width="1200"
-        height="468"
-        alt={SITE_NAME}
-      />
     </div>
   </section>
 
@@ -53,81 +70,91 @@ const organization = {
   <Section id="introduction" index="01" rule>
     <SectionHeading
       label="Introduction"
-      title="Two disciplines, one company"
-      lede="CODEDNA is a technology + biology company. Software, computation, and engineering on one side; living systems, measurement, and the laboratory on the other."
+      title="One company, four disciplines"
+      lede="CODEDNA builds products and solves problems with technology. Apps, artificial intelligence, cloud computing and IT consulting sit under one roof."
     />
     <p class="prose prose--indent">
-      The company is young, and its direction is still being shaped. This site is its first
-      public statement — a record of where the work starts, not where it ends.
+      We build software we run ourselves, and we bring the same engineering discipline to work we
+      do for other businesses. The two reinforce each other: products keep us sharp, and client
+      work keeps us close to real constraints.
     </p>
   </Section>
 
-  <!-- 02 · Technology × Biology -->
-  <Section id="intersection" index="02" rule>
+  <!-- 02 · Services -->
+  <Section id="services" index="02" rule tone="surface">
     <SectionHeading
-      label="The intersection"
-      title="Technology × Biology"
+      label="Services"
+      title="What we do"
+      lede="Four areas, delivered by the same small team."
     />
-    <div class="axis">
-      <div class="axis__item">
-        <p class="micro">Technology</p>
-        <p class="axis__body">
-          Computation, software, and engineering discipline.
-        </p>
-      </div>
-      <div class="axis__item">
-        <p class="micro">Biology</p>
-        <p class="axis__body">
-          Living systems, measurement, and the laboratory.
-        </p>
-      </div>
-    </div>
-    <p class="prose">
-      The work that matters happens at the boundary — where software must answer to the
-      realities of biology, and biology receives instruments it was never designed for.
-    </p>
-  </Section>
-
-  <!-- 03 · Areas of interest -->
-  <Section id="interests" index="03" rule tone="surface">
-    <SectionHeading
-      label="Areas of interest"
-      title="Where our attention currently sits"
-      lede="Broad directions we are exploring — not an offering, and not yet a roadmap."
-    />
-    <ol class="interests">
+    <ul class="services">
       {
-        AREAS_OF_INTEREST.map((area, i) => (
-          <li class="interest">
-            <span class="interest__index" aria-hidden="true">
+        SERVICES.map((service, i) => (
+          <li class="service">
+            <span class="service__index" aria-hidden="true">
               {(i + 1).toString().padStart(2, '0')}
             </span>
-            <div class="interest__body">
-              <h3>{area.title}</h3>
-              <p>{area.body}</p>
+            <div class="service__body">
+              <h3>{service.title}</h3>
+              <p>{service.body}</p>
+              {'href' in service && service.href && (
+                <p class="service__link">
+                  <a href={service.href}>Explore apps →</a>
+                </p>
+              )}
             </div>
           </li>
         ))
       }
-    </ol>
+    </ul>
   </Section>
 
-  <!-- 04 · Philosophy -->
-  <Section id="philosophy" index="04" rule>
+  <!-- 03 · Apps -->
+  <Section id="apps" index="03" rule>
     <SectionHeading
-      label="Philosophy"
-      title="Our working premise"
-      lede="Code is becoming one of the primary instruments for working with living systems."
+      label="Apps"
+      title="Products we build"
+      lede="Software we own and operate. More are on the way."
+    />
+    <ul class="apps">
+      {
+        APPS.map((app) => (
+          <li class="app">
+            <div class="app__head">
+              <h3>{app.name}</h3>
+              <span class="micro">{app.status}</span>
+            </div>
+            <p class="app__tagline">{app.tagline}</p>
+            <p class="app__summary">{app.summary}</p>
+            <p class="app__link">
+              <a href={app.href}>About {app.name} →</a>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- 04 · Approach -->
+  <Section id="approach" index="04" rule>
+    <SectionHeading
+      label="Approach"
+      title="Engineering, not theatre"
+      lede="Straightforward software, delivered by people who will still be there after launch."
     />
     <p class="prose">
-      The people who build that future will come from both sides of the seam. We believe they
-      should be honest about how much of it remains unknown — and disciplined about the parts
-      that are.
+      We prefer clear architecture, honest timelines and systems that are easy to operate.
+      Whether we are shipping one of our own apps or a client platform, the goal is the same:
+      software that does its job and can be maintained by the next person who touches it.
     </p>
   </Section>
 
   <!-- 05 · Contact -->
-  <CallToAction index="05" />
+  <CallToAction
+    index="05"
+    title="Let's build something"
+    body="Tell us what you are working on, or ask about one of our apps. We read everything and reply."
+  />
 </BaseLayout>
 
 <style>
@@ -136,31 +163,37 @@ const organization = {
     border-block-end: 1px solid rgba(255, 255, 255, 0.25);
   }
 
-  .hero__copy {
-    min-width: 0;
+  .hero__inner {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
   }
 
-  .hero__grid {
+  /* Title and wordmark share a row on wide screens; the logo centres on the title. */
+  .hero__head {
     display: grid;
-    gap: clamp(2.75rem, 7vw, 4.5rem);
+    gap: clamp(1.75rem, 5vw, 3rem);
   }
 
   @media (min-width: 64rem) {
-    .hero__grid {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-      align-items: start;
+    .hero__head {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: clamp(2.5rem, 6vw, 5rem);
     }
   }
 
+  .hero__body {
+    max-width: 48rem;
+  }
+
   .hero__title {
-    max-width: 12ch;
+    max-width: 14ch;
     margin: 0;
     color: var(--color-paper);
   }
 
   .hero__lede {
-    margin-block-start: clamp(1.75rem, 4vw, 2.5rem);
-    max-width: 42ch;
+    max-width: 46ch;
   }
 
   .hero__actions {
@@ -174,23 +207,20 @@ const organization = {
   .hero__rule {
     margin-block-start: clamp(3rem, 7vw, 5rem);
     margin-block-end: 1rem;
-    max-width: 48rem;
     border-block-start-color: rgba(255, 255, 255, 0.25);
   }
 
-  /* Offset to the side: sits low-right on wide screens, below the copy stacked. */
   .hero__logo {
     width: 100%;
     height: auto;
-    max-width: 34rem;
-    align-self: end;
+    max-width: 32rem;
   }
 
   @media (min-width: 64rem) {
     .hero__logo {
+      width: auto;
+      max-width: 26rem;
       justify-self: end;
-      /* hang below the copy baseline for asymmetry */
-      margin-block-start: clamp(4rem, 9vw, 7.5rem);
     }
   }
 
@@ -198,75 +228,141 @@ const organization = {
     margin-block-start: 2rem;
   }
 
-  /* Technology × Biology */
-  .axis {
+  /* Services — equal four-card grid */
+  .services {
     display: grid;
-    gap: 1.5rem;
-    margin-block: 2.5rem 2rem;
-    max-width: 52rem;
-  }
-
-  @media (min-width: 48rem) {
-    .axis {
-      grid-template-columns: 1fr 1fr;
-      gap: 0 2.5rem;
-    }
-  }
-
-  .axis__item {
-    border-block-start: 1px solid var(--color-rule);
-    padding-block-start: 1rem;
-    display: grid;
-    gap: 1.25rem;
-  }
-
-  .axis__body {
-    font-size: var(--text-h3);
-    line-height: var(--text-h3--line-height);
-    letter-spacing: var(--text-h3--letter-spacing);
-    margin: 0;
-    max-width: 24ch;
-  }
-
-  /* Areas of interest */
-  .interests {
+    gap: 0;
     list-style: none;
-    margin: 2.5rem 0 0;
+    margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
     padding: 0;
-    max-width: 52rem;
-  }
-
-  .interest {
-    display: grid;
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    gap: 1rem;
-    align-items: baseline;
     border-block-start: 1px solid var(--color-rule);
-    padding-block: 1.5rem;
   }
 
-  @media (min-width: 48rem) {
-    .interest {
-      grid-template-columns: 5rem minmax(0, 1fr);
+  @media (min-width: 40rem) {
+    .services {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  .interest__index {
+  @media (min-width: 64rem) {
+    .services {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .service {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: 1.75rem 1.5rem 2rem 0;
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  @media (min-width: 40rem) {
+    .service {
+      padding-inline-end: 2rem;
+      border-inline-start: 1px solid var(--color-rule);
+      padding-inline-start: 1.5rem;
+    }
+
+    .service:nth-child(odd) {
+      border-inline-start: 0;
+      padding-inline-start: 0;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .service {
+      border-inline-start: 1px solid var(--color-rule);
+      border-block-end: 0;
+      padding-inline-start: 1.5rem;
+    }
+
+    .service:first-child {
+      border-inline-start: 0;
+      padding-inline-start: 0;
+    }
+  }
+
+  .service__index {
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: var(--text-micro--letter-spacing);
     color: var(--color-ink-faint);
   }
 
-  .interest h3 {
+  .service h3 {
     font-size: 1.125rem;
     font-weight: 500;
     margin: 0;
   }
 
-  .interest p {
+  .service p {
     margin: 0.5rem 0 0;
     color: var(--color-ink-muted);
+  }
+
+  .service__link {
+    font-weight: 500;
+  }
+
+  .service__link a {
+    color: var(--color-ink);
+  }
+
+  /* Apps */
+  .apps {
+    display: grid;
+    gap: 1px;
+    list-style: none;
+    margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    background-color: var(--color-rule);
+  }
+
+  @media (min-width: 48rem) {
+    .apps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .app {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    background-color: var(--color-paper);
+    padding: 1.75rem 1.75rem 2rem;
+  }
+
+  .app__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .app__head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .app__tagline {
+    margin: 0;
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h3--letter-spacing);
+  }
+
+  .app__summary {
+    margin: 0;
+    color: var(--color-ink-muted);
     max-width: 52ch;
+  }
+
+  .app__link {
+    margin: 0.25rem 0 0;
+    font-weight: 500;
   }
 </style>

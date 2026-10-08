@@ -1,5 +1,5 @@
 ---
-import { CONTACT_EMAIL, NAV_ITEMS, SITE_NAME } from '../data/site';
+import { CONTACT_EMAIL, NAV_ITEMS, SITE_NAME, SITE_TAGLINE } from '../data/site';
 
 const year = new Date().getFullYear();
 ---
@@ -8,7 +8,7 @@ const year = new Date().getFullYear();
   <div class="container-page site-footer__inner">
     <div class="site-footer__brand">
       <p class="brand">{SITE_NAME}</p>
-      <p class="micro">Where Code Meets Biology</p>
+      <p class="micro">{SITE_TAGLINE}</p>
     </div>
 
     <nav aria-label="Footer">

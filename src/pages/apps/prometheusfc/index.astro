@@ -1,0 +1,185 @@
+---
+import ActionLink from '../../../components/ActionLink.astro';
+import CallToAction from '../../../components/CallToAction.astro';
+import Section from '../../../components/Section.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { APPS } from '../../../data/apps';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const app = APPS.find((item) => item.slug === 'prometheusfc')!;
+const title = `${app.name} · CODEDNA`;
+const description = `${app.name} — ${app.tagline} ${app.summary}`;
+---
+
+<BaseLayout title={title} description={description} path={app.href}>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container-page">
+      <p class="micro">Apps / {app.name}</p>
+      <h1 class="text-h1 hero__title">{app.name}</h1>
+      <p class="lede hero__lede">{app.tagline}</p>
+      <p class="hero__actions">
+        <ActionLink href="/contact">Contact</ActionLink>
+        {
+          app.privacyPath && (
+            <ActionLink href={app.privacyPath} variant="text">
+              Privacy policy
+            </ActionLink>
+          )
+        }
+      </p>
+    </div>
+  </section>
+
+  <!-- 01 · What it is -->
+  <Section id="about" index="01" rule>
+    <SectionHeading label="What it is" title="Predictions, made into a game" />
+    <div class="prose">
+      <p>{app.summary}</p>
+      <p>
+        PrometheusFC is built around a virtual bankroll — you play with in-app currency, not
+        real money. The point is the prediction: the analysis, the streak, and the argument with
+        your friends about who actually called it.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 02 · Features -->
+  <Section id="features" index="02" rule tone="surface">
+    <SectionHeading label="Features" title="What you can do" />
+    <ul class="features">
+      {
+        app.features.map((feature) => (
+          <li class="feature">{feature}</li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- 03 · Beta -->
+  <Section id="beta" index="03" rule>
+    <SectionHeading
+      label="Availability"
+      title="In beta"
+      lede="PrometheusFC is being tested on both major mobile platforms."
+    />
+    <dl class="facts">
+      <div class="fact">
+        <dt class="micro">Status</dt>
+        <dd>{app.status}</dd>
+      </div>
+      <div class="fact">
+        <dt class="micro">Platforms</dt>
+        <dd>{app.platforms.join(' · ')}</dd>
+      </div>
+      <div class="fact">
+        <dt class="micro">Age</dt>
+        <dd>18 and over</dd>
+      </div>
+      <div class="fact">
+        <dt class="micro">Operated by</dt>
+        <dd>C0DEDNA LLC, Texas, United States</dd>
+      </div>
+    </dl>
+  </Section>
+
+  <!-- 04 · Privacy -->
+  <Section id="privacy" index="04" rule>
+    <SectionHeading
+      label="Privacy"
+      title="Your data in PrometheusFC"
+      lede="How PrometheusFC handles personal information is documented in its own privacy policy."
+    />
+    <p class="prose">
+      The policy covers what is collected, how it is used, who it is shared with and the
+      choices you have — including deleting your account from inside the app.
+    </p>
+    <p class="privacy-link">
+      {
+        app.privacyPath && (
+          <ActionLink href={app.privacyPath} variant="outline">
+            Read the privacy policy
+          </ActionLink>
+        )
+      }
+    </p>
+  </Section>
+
+  <CallToAction
+    index="05"
+    title="Questions about PrometheusFC?"
+    body="Email the team or use the contact form — we reply to everything."
+  />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4.5rem, 12vw, 7.5rem) clamp(3.5rem, 9vw, 6rem);
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  .hero__title {
+    margin: 0.75rem 0 0;
+  }
+
+  .hero__lede {
+    margin-block-start: 1.25rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    margin-block-start: 2.25rem;
+  }
+
+  .features {
+    display: grid;
+    gap: 1px;
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    background-color: var(--color-rule);
+  }
+
+  @media (min-width: 40rem) {
+    .features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .feature {
+    background-color: var(--color-surface);
+    padding: 1.25rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .facts {
+    display: grid;
+    gap: 1.5rem 2.5rem;
+    margin: 2.5rem 0 0;
+  }
+
+  @media (min-width: 40rem) {
+    .facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .fact {
+    border-block-start: 1px solid var(--color-rule);
+    padding-block-start: 1rem;
+  }
+
+  .fact dd {
+    margin: 0.5rem 0 0;
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+  }
+
+  .privacy-link {
+    margin-block-start: 2rem;
+  }
+</style>

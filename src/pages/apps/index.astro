@@ -1,0 +1,124 @@
+---
+import CallToAction from '../../components/CallToAction.astro';
+import Section from '../../components/Section.astro';
+import { APPS } from '../../data/apps';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Apps · CODEDNA';
+const description =
+  'Apps built and operated by CODEDNA — including PrometheusFC and FinAlgo.';
+---
+
+<BaseLayout title={title} description={description} path="/apps">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container-page">
+      <p class="micro">Apps</p>
+      <h1 class="text-h1 hero__title">Products we build and run.</h1>
+      <p class="lede">
+        CODEDNA designs, develops and operates its own software. These are the apps so far —
+        more are on the way.
+      </p>
+    </div>
+  </section>
+
+  <!-- Apps -->
+  <Section id="apps" index="01" rule>
+    <ul class="apps">
+      {
+        APPS.map((app) => (
+          <li class="app">
+            <div class="app__head">
+              <h2 class="app__name">{app.name}</h2>
+              <span class="micro">{app.status}</span>
+            </div>
+            <p class="app__tagline">{app.tagline}</p>
+            <p class="app__summary">{app.summary}</p>
+            <p class="app__link">
+              <a href={app.href}>Open {app.name} →</a>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <CallToAction
+    index="02"
+    title="Building an app with us?"
+    body="If you want an app designed and shipped, or you are curious about our own, get in touch."
+  />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4.5rem, 12vw, 7.5rem) clamp(3.5rem, 9vw, 6rem);
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  .hero__title {
+    margin: 0.75rem 0 0;
+    max-width: 18ch;
+  }
+
+  .hero .lede {
+    margin-block-start: 1.5rem;
+    max-width: 48ch;
+  }
+
+  .apps {
+    display: grid;
+    gap: 1px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    background-color: var(--color-rule);
+  }
+
+  @media (min-width: 48rem) {
+    .apps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .app {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    background-color: var(--color-paper);
+    padding: 2rem;
+  }
+
+  .app__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .app__name {
+    margin: 0;
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+  }
+
+  .app__tagline {
+    margin: 0;
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h3--letter-spacing);
+  }
+
+  .app__summary {
+    margin: 0;
+    color: var(--color-ink-muted);
+    max-width: 52ch;
+  }
+
+  .app__link {
+    margin: 0.25rem 0 0;
+    font-weight: 500;
+  }
+</style>

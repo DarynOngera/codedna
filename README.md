@@ -1,12 +1,13 @@
 # CODEDNA — c0dedna.com
 
-Where Code Meets Biology.
+Software, Cloud & AI for business.
 
-A small, deliberate corporate website for CODEDNA. Three static pages (Home, About,
-Contact) built with Astro + Tailwind, plus one tiny Node API for the contact form.
+A small, deliberate corporate website for CODEDNA. Static pages (Home, About, Contact,
+Apps including PrometheusFC and FinAlgo, and their privacy policies) built with Astro +
+Tailwind, plus one tiny Node API for the contact form.
 
-> Status: v0.1 exploratory presence. Business direction not yet final — the site makes
-> no product, capability, or traction claims beyond "technology + biology company".
+> Status: v0.1. CODEDNA builds apps and provides artificial intelligence, cloud computing
+> and IT consulting.
 
 ## Stack
 
@@ -33,9 +34,9 @@ public/        favicons, og image, robots.txt, manifest
 src/
   components/  Astro components (Section, Header, ContactForm, …)
   layouts/     BaseLayout (single HTML shell)
-  pages/       index, about, contact, 404
+  pages/       index, about, contact, apps/*, 404
   styles/      global.css — the entire design system (Tailwind v4 @theme)
-  data/        site.ts — one source of truth for identity + shared content
+  data/        site.ts + apps.ts — identity, services, nav and app content
 server/
   src/         Express app, validation, Resend provider, config
   test/        node:test suite (23 tests)

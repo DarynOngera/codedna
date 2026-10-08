@@ -1,0 +1,67 @@
+---
+import ActionLink from '../../../components/ActionLink.astro';
+import CallToAction from '../../../components/CallToAction.astro';
+import Section from '../../../components/Section.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { APPS } from '../../../data/apps';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const app = APPS.find((item) => item.slug === 'finalgo')!;
+const title = `${app.name} · CODEDNA`;
+const description = `${app.name} — ${app.summary}`;
+---
+
+<BaseLayout title={title} description={description} path={app.href}>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container-page">
+      <p class="micro">Apps / {app.name}</p>
+      <h1 class="text-h1 hero__title">{app.name}</h1>
+      <p class="lede hero__lede">{app.tagline}</p>
+      <p class="hero__actions">
+        <ActionLink href="/contact">Contact</ActionLink>
+      </p>
+    </div>
+  </section>
+
+  <!-- TODO: replace placeholder copy below with the final FinAlgo description. -->
+  <Section id="about" index="01" rule>
+    <SectionHeading label="What it is" title="Details coming soon" />
+    <div class="prose">
+      <p>{app.summary}</p>
+      <p>
+        We are finishing this page. In the meantime, get in touch if you would like to know more
+        about what we are building.
+      </p>
+    </div>
+  </Section>
+
+  <CallToAction
+    index="02"
+    title="Interested in FinAlgo?"
+    body="Reach out and we will tell you where the product is up to."
+  />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(4.5rem, 12vw, 7.5rem) clamp(3.5rem, 9vw, 6rem);
+    border-block-end: 1px solid var(--color-rule);
+  }
+
+  .hero__title {
+    margin: 0.75rem 0 0;
+  }
+
+  .hero__lede {
+    margin-block-start: 1.25rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    margin-block-start: 2.25rem;
+  }
+</style>
