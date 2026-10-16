@@ -18,23 +18,23 @@ export const NAV_ITEMS = [
   { href: '/apps', label: 'Apps' },
 ] as const;
 
-/** The four things CODEDNA does. Rendered as an equal grid on the home page. */
 export const SERVICES = [
   {
     title: 'Apps',
-    body: 'Products we design, build and run ourselves — from football predictions to algorithmic finance.',
+    body: 'We build and run our own software products, from football predictions to algorithmic finance.',
     href: '/apps',
   },
   {
     title: 'Artificial Intelligence',
-    body: 'Machine learning, prediction and automation applied to real business problems and data.',
+    body: 'We work with machine learning, predictive models and automation to solve problems using real data.',
   },
   {
     title: 'Cloud Computing',
-    body: 'Architecture, migration and operations on cloud infrastructure that scales with the workload.',
+    body: 'We design, deploy and manage cloud infrastructure, from initial setup to ongoing operations.',
   },
   {
     title: 'IT Consulting',
-    body: 'Technical direction and hands-on engineering for teams that need to move carefully and fast.',
+    body: 'We help businesses make technical decisions, design systems and put solutions into practice.',
   },
 ] as const;
+
