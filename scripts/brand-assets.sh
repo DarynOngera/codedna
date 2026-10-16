@@ -16,7 +16,8 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 # The full two-line glyph lockup (used for the social cover):
-GLYPH="${GLYPH:-559x218+481+343}"
+# measured extents 560x218 @ +481+343, padded 1px to avoid edge fringe.
+GLYPH="${GLYPH:-562x220+480+342}"
 # Favicon source: the compact "C" monogram from the left of the large wordmark,
 # so the mark reads clearly at 16px.
 MARK="126x145+481+343"
@@ -63,18 +64,27 @@ magick "$TMP/glyph.png" -resize 760x "$TMP/glyph_sized.png"
 magick "$TMP/canvas.png" "$TMP/glyph_sized.png" \
   -gravity center -composite "$OUT/og-cover.png"
 
-# Web logos (black + inverted-for-dark-background versions of the lockup).
-magick "$TMP/glyph.png" -resize 1200x "png32:$OUT/logo.png"
+# Structured-data logo (canonical absolute URL): keep a PNG for maximum
+# scraper compatibility. Sized to ~2x the largest on-screen use (hero caps
+# at 32rem = 512px wide) and quantized — it is a monochrome wordmark, so a
+# small palette keeps the bytes down. No "png32:" prefix so ImageMagick may
+# write an indexed (palette) PNG.
+magick "$TMP/glyph.png" -resize 1024x -colors 64 "$OUT/logo.png"
+
+# Inverted lockup for the dark hero background: WebP keeps the
+# anti-aliased alpha at a fraction of the RGBA-PNG byte count.
 magick "$TMP/glyph.png" -channel RGB -negate +channel \
-  -resize 1200x "png32:$OUT/logo-inverse.png"
+  -resize 1024x -define webp:method=6 "webp:$OUT/logo-inverse.webp"
 
 # Header wordmark: the big CODEDNA line only (no trailing small line).
-WORD="559x145+481+343"
+# Measured extents 560x146 @ +481+343, padded 1px to avoid edge fringe.
+# Displayed at 1.625rem (~26px) tall, so 78px tall covers 3x retina.
+WORD="562x148+480+342"
 magick "$SRC" -crop "$WORD" +repage -colorspace sRGB -alpha on -fuzz 6% \
   -transparent white -strip "png32:$TMP/word.png"
-magick "$TMP/word.png" -resize 760x "png32:$OUT/logo-mark.png"
+magick "$TMP/word.png" -resize x78 -define webp:method=6 "webp:$OUT/logo-mark.webp"
 
 echo "brand assets written to $OUT/"
 ls -1 "$OUT/og-cover.png" "$OUT/favicon.ico" "$OUT/favicon.svg" \
   "$OUT/icon-192.png" "$OUT/icon-512.png" "$OUT/apple-touch-icon.png" \
-  "$OUT/logo.png" "$OUT/logo-inverse.png" "$OUT/logo-mark.png"
+  "$OUT/logo.png" "$OUT/logo-inverse.webp" "$OUT/logo-mark.webp"
