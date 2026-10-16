@@ -43,11 +43,16 @@ export const APPS: readonly AppInfo[] = [
   {
     slug: 'finalgo',
     name: 'FinAlgo',
-    tagline: 'Algorithmic finance, in development.',
+    tagline: 'Take control of your financial health.',
     summary:
-      'FinAlgo is our algorithmic finance product. Full product details are being finalised and will appear here.',
-    features: [],
-    platforms: [],
+      'A personal finance app for planning major life goals, understanding where your balance is heading and making smarter saving decisions — built on advanced projections and simulations tuned to your situation.',
+    features: [
+      'Plan major life goals with advanced projections and simulations',
+      'Guidance through every step of requesting a loan',
+      'Proactive balance forecasts built on data science and models tuned to you',
+      'Smart alerts and savings recommendations',
+    ],
+    platforms: ['iOS', 'Android', 'Web'],
     status: 'In development',
     href: '/apps/finalgo',
   },

@@ -8,7 +8,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 const app = APPS.find((item) => item.slug === 'finalgo')!;
 const title = `${app.name} · CODEDNA`;
-const description = `${app.name} — ${app.summary}`;
+const description = `${app.name} — ${app.tagline} ${app.summary}`;
 ---
 
 <BaseLayout title={title} description={description} path={app.href}>
@@ -24,20 +24,57 @@ const description = `${app.name} — ${app.summary}`;
     </div>
   </section>
 
-  <!-- TODO: replace placeholder copy below with the final FinAlgo description. -->
+  <!-- 01 · What it is -->
   <Section id="about" index="01" rule>
-    <SectionHeading label="What it is" title="Details coming soon" />
+    <SectionHeading label="What it is" title="Your finances, understood in advance" />
     <div class="prose">
       <p>{app.summary}</p>
       <p>
-        We are finishing this page. In the meantime, get in touch if you would like to know more
-        about what we are building.
+        FinAlgo is a personal finance application built to raise your financial health. Instead
+        of only recording what happened last month, it projects where you are heading, warns you
+        before you drift off course and suggests concrete ways to save — from your own numbers,
+        not generic advice.
       </p>
     </div>
   </Section>
 
+  <!-- 02 · Features -->
+  <Section id="features" index="02" rule tone="surface">
+    <SectionHeading label="Features" title="What you can do" />
+    <ul class="features">
+      {
+        app.features.map((feature) => (
+          <li class="feature">{feature}</li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- 03 · Availability -->
+  <Section id="availability" index="03" rule>
+    <SectionHeading
+      label="Availability"
+      title={app.status}
+      lede="FinAlgo is being built for iOS, Android and the web — details of the first release are being finalised now."
+    />
+    <dl class="facts">
+      <div class="fact">
+        <dt class="micro">Status</dt>
+        <dd>{app.status}</dd>
+      </div>
+      <div class="fact">
+        <dt class="micro">Platforms</dt>
+        <dd>{app.platforms.join(' · ')}</dd>
+      </div>
+      <div class="fact">
+        <dt class="micro">Operated by</dt>
+        <dd>C0DEDNA LLC, Texas, United States</dd>
+      </div>
+    </dl>
+  </Section>
+
   <CallToAction
-    index="02"
+    index="04"
     title="Interested in FinAlgo?"
     body="Reach out and we will tell you where the product is up to."
   />
@@ -63,5 +100,50 @@ const description = `${app.name} — ${app.summary}`;
     align-items: center;
     gap: 1.5rem;
     margin-block-start: 2.25rem;
+  }
+
+  .features {
+    display: grid;
+    gap: 1px;
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    background-color: var(--color-rule);
+  }
+
+  @media (min-width: 40rem) {
+    .features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .feature {
+    background-color: var(--color-surface);
+    padding: 1.25rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .facts {
+    display: grid;
+    gap: 1.5rem 2.5rem;
+    margin: 2.5rem 0 0;
+  }
+
+  @media (min-width: 40rem) {
+    .facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .fact {
+    border-block-start: 1px solid var(--color-rule);
+    padding-block-start: 1rem;
+  }
+
+  .fact dd {
+    margin: 0.5rem 0 0;
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
   }
 </style>
